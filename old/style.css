@@ -1,0 +1,237 @@
+*, *:before, *:after{
+  box-sizing: border-box;
+}
+html, body{
+  box-sizing: border-box;
+}
+
+
+
+
+.colorpicker-label{
+  width: 24px;
+  height: 24px;
+  background: red;
+  border: 2px solid white;
+  border-radius: 50%;
+  float: left;
+  cursor: pointer;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+.colorpicker-input{
+  margin-left: 10px;
+  width: 150px;
+  height: 25px;
+  border: 0px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.colorpicker{
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+.colorpicker.active{
+  display: block;
+}
+
+.cp{
+  position: fixed;
+  top: 150px;
+  left: 50%;
+  width: 355px;
+  margin-left: -178px;
+
+  background: white;
+  overflow: auto;
+
+  border-radius: 5px;
+  box-shadow: 0px 0px 45px 0px rgba(0, 0, 0, 0.3);
+}
+  .colorpicker-bg{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+  }
+
+  .cp:hover .copy{
+    opacity: 1;
+    transition: 0.2s all ease-in-out;
+  }
+  .copy{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 13px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    opacity: 0;
+    transition: 0.2s all ease-in-out;
+  }
+
+.container{
+  position: relative;
+  float: left;
+}
+
+
+
+.spectrum{
+  width: 255px;
+  height: 255px;
+  margin: 0 0 0 10px;
+  background: #565656;
+  cursor: crosshair;
+}
+
+.hue{
+  width: 30px;
+  height: 255px;
+  margin-left: 10px;
+  background: #565656;
+  cursor: crosshair;
+}
+
+.alpha{
+  width: 30px;
+  height: 255px;
+  margin-left: 10px;
+  background: #565656;
+  background: url("bg.png");
+  background-size: 200px;
+  background-position: center;
+  cursor: crosshair;
+}
+
+
+.crossMarker{
+  box-sizing: border-box;
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  margin-left: -6px;
+  pointer-events: none;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: transparent;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.5), inset 0 0 2px 0 rgba(0,0,0,0.5);
+}
+.barMarker{
+  box-sizing: border-box;
+  position: absolute;
+  left: -2px;
+  margin-top: -2px;
+  width: 34px;
+  height: 5px;
+  pointer-events: none;
+  background: transparent;
+  border: 2px solid #fff;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.5);
+}
+
+.colorBox{
+  position: relative;
+  float: left;
+  width: 100%;
+  height: 90px;
+  margin: 0 0 10px 0;
+  padding: 0;
+  background: #565656;
+  background: url("bg.png");
+}
+
+.hexDiv, .rgbDiv, .hslDiv{
+  display: none;
+  height: 60px;
+  width: 100%;
+  padding: 20px;
+  font-size: 18px;
+  font-family: sans-serif;
+  letter-spacing: 1px;
+  text-align: center;
+}
+.hexDiv.active,
+.rgbDiv.active,
+.hslDiv.active{
+  display: block;
+  height: 60px;
+  width: 100%;
+}
+
+.colorBoxBtns{
+  width: 100%;
+  height: 30px;
+}
+  .colorBoxBtns button{
+    position: relative;
+    appearance: none;
+    width: 33.333%;
+    height: 30px;
+    background: transparent;
+    border: 0px;
+    outline: none;
+    cursor: pointer;
+  }
+    .colorBoxBtns button.active::before{
+      display: none;
+    }
+    .colorBoxBtns button::before{
+      position: absolute;
+      display: block;
+      content: "";
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+.colorBox canvas{
+  width: 100%;
+  height: 105px;
+}
+
+.colorBox p{
+  position: relative;
+  top: 0;
+  width: 100%;
+  padding: 13px 0;
+  font-size: 16px;
+  font-family: sans-serif;
+  letter-spacing: 1px;
+  text-align: center;
+  color: white;
+}
+
+
+
+.buttons{
+  width: 100%;
+  height: 50px;
+  float: left;
+}
+.buttons button{
+  appearance: none;
+  width: 50%;
+  height: 50px;
+  border: 0px;
+  background: white;
+  font-size: 14px;
+  color: #565656;
+  cursor: pointer;
+  outline: none;
+  text-transform: uppercase;
+}
+  .buttons button:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
