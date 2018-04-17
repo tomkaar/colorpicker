@@ -1,5 +1,7 @@
 # ColorPicker
-I found a picture of a colorpicker somewhere a long time ago and I thought I could probably made that, so I did. It is still a work in progress.
+I found a picture of a colorpicker somewhere a long time ago and I thought I could probably made that, so I did. It is still a work in progress. <br>
+
+You can find a working demo [here](https://tomkaar.github.io/colorpicker/)
 
 
 
@@ -37,6 +39,7 @@ var label = document.getElementById("colorpicker-label");
 var input = document.getElementById("colorpicker-input");
 
 ```
+Create the colorpicker.
 ```
 var colorpicker = new ColorPicker(label, input);
 ```
