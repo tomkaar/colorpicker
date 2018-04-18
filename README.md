@@ -89,9 +89,14 @@ The clipboard function is still fairly new and the support is lacking, if you wa
 
 
 
-
 ## ToDo
-- Touch Friendly, right now it 'works' but it's not a good experience
+- Touch Friendly
 - Input text on open picker
 - Functions - `setColor` ex. `colorpicker.setColor("value");`
 - Settings - BackgroundColor
+
+
+
+## Things to consider
+- Switch from Canvas to CSS Gradients for better browser support
+- Shortcut to close the picker (optional + setting -> default: false) ex. esc

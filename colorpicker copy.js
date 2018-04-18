@@ -20,9 +20,6 @@ class ColorPicker {
       "change": false, // If change
       "open": false, // if picker is open (true)
       "move": false, // if user should be able to drag a marker
-      "moveAlpha": false, // if user should be able to drag a marker
-      "moveHue": false, // if user should be able to drag a marker
-      "moveAlpha": false, // if user should be able to drag a marker
       "selected": "hex", // currently selected type (results)
       currentColor: {
         "hsv":  {"h": 0, "s": 100, "v": 100},
@@ -306,7 +303,6 @@ class ColorPicker {
         this.flashMessage("Oops, that value is not valid", "error", 30000);
       }
 
-      this.session.currentColor.alpha = alpha;
       this.updatePositionFromValue(hsv, alpha);
 
       this.drawHue();
@@ -774,7 +770,7 @@ class ColorPicker {
     grd.addColorStop(.5, "rgba(0, 255, 255, 1.000)");
     grd.addColorStop(.666, "rgba(0, 255, 0, 1.000)");
     grd.addColorStop(.832, "rgba(255, 255, 0, 1.000)");
-    grd.addColorStop(0.99, "rgba(255, 0, 0, 1.000)");
+    grd.addColorStop(0.999, "rgba(255, 0, 0, 1.000)");
     ctx.fillStyle = grd;
     ctx.fillRect(0, 0, this.hue.width, this.hue.height);
     ctx.fill();
@@ -1087,34 +1083,33 @@ class ColorPicker {
           marker.setAttribute("class", "spectrumMarker crossMarker");
           marker.setAttribute("style", "top: 10px; left: 245px; ");
 
-          spectrum.addEventListener("mousedown", () => { this.session.moveSpectrum = true; });
-          this.ele.object.addEventListener("mouseup", () => {
-            this.session.moveSpectrum = false;
-            this.ele.object.classList.remove("select-none");
-          });
-          this.ele.object.addEventListener("mousemove", (e) => {
-            if(this.session.moveSpectrum){
-              this.updatePosition(e, container, marker, "both", "spectrum");
+          spectrum.addEventListener("mousedown", () => { this.session.move = true; });
+          spectrum.addEventListener("mouseup", () => { this.session.move = false; });
+          spectrum.addEventListener("mouseleave", () => { this.session.move = false; });
+          spectrum.addEventListener("mousemove", (e) => {
+            if(this.session.move){
+              this.spectrum.pos.x = e.layerX;
+              this.spectrum.pos.y = e.layerY;
+              marker.setAttribute("style", "top: " + (e.layerY) + "px; left: "+ (e.layerX) + "px;");
               this.userClickOnSpectrum();
-              this.ele.object.classList.add("select-none");
             }
           });
           spectrum.addEventListener("click", (e) => {
-            this.updatePosition(e, container, marker, "both", "spectrum");
+            this.spectrum.pos.x = e.layerX;
+            this.spectrum.pos.y = e.layerY;
+            marker.setAttribute("style", "top: " + (e.layerY) + "px; left: "+ (e.layerX) + "px;");
             this.userClickOnSpectrum();
           });
 
-          spectrum.addEventListener("touchstart", () => { this.session.moveSpectrum = true; });
-          this.ele.object.addEventListener("touchend", () => {
-            this.session.moveSpectrum = false;
-            this.ele.object.classList.remove("select-none");
-          });
-          this.ele.object.addEventListener("touchmove", (e) => {
-            if(this.session.moveSpectrum){
-            this.updatePosition(e.touches[0], container, marker, "both", "spectrum", "mobile");
-            this.userClickOnSpectrum();
-            this.ele.object.classList.add("select-none");
-          }
+          spectrum.addEventListener("touchstart", () => { this.session.move = true; });
+          spectrum.addEventListener("touchend", () => { this.session.move = false; });
+          spectrum.addEventListener("touchmove", (e) => {
+            if(this.session.move){
+              this.spectrum.pos.x = e.layerX;
+              this.spectrum.pos.y = e.layerY;
+              marker.setAttribute("style", "top: " + (e.layerY) + "px; left: "+ (e.layerX) + "px;");
+              this.userClickOnSpectrum();
+            }
           });
 
         // save to
@@ -1140,36 +1135,35 @@ class ColorPicker {
           marker.setAttribute("class", "spectrumMarker barMarker");
           marker.setAttribute("style", "top: 10px;");
 
-          hue.addEventListener("mousedown", () => { this.session.moveHue = true; });
-          this.ele.object.addEventListener("mouseup", () => {
-            this.session.moveHue = false;
-            this.ele.object.classList.remove("select-none");
-          });
-          this.ele.object.addEventListener("mousemove", (e) => {
-            if(this.session.moveHue){
-              this.updatePosition(e, container, marker, "x", "hue");
-              this.userClickOnHue();
-              this.ele.object.classList.add("select-none");
-            }
-          });
-          hue.addEventListener("click", (e) => {
-            this.updatePosition(e, container, marker, "x", "hue");
+        hue.addEventListener("mousedown", () => { this.session.move = true; });
+        hue.addEventListener("mouseup", () => { this.session.move = false; });
+        hue.addEventListener("mouseleave", () => { this.session.move = false; });
+        hue.addEventListener("mousemove", (e) => {
+          if(this.session.move){
+            this.hue.pos.x = e.layerX;
+            this.hue.pos.y = e.layerY;
+            marker.setAttribute("style", "top: " + (e.layerY) + "px;");
             this.userClickOnHue();
-          });
-
-          hue.addEventListener("touchstart", () => { this.session.moveHue = true; });
-          this.ele.object.addEventListener("touchend", () => {
-            this.session.moveHue = false;
-            this.ele.object.classList.remove("select-none");
-          });
-          this.ele.object.addEventListener("touchmove", (e) => {
-            if(this.session.moveHue){
-            this.updatePosition(e.touches[0], container, marker, "x", "hue", "mobile");
-            this.userClickOnHue();
-            this.ele.object.classList.add("select-none");
           }
-          });
+        });
+        hue.addEventListener("click", (e) => {
+          this.hue.pos.x = e.layerX;
+          this.hue.pos.y = e.layerY;
+          marker.setAttribute("style", "top: " + (e.layerY) + "px;");
+          this.userClickOnHue();
+        });
 
+        hue.addEventListener("touchstart", () => { this.session.move = true; });
+        hue.addEventListener("touchend", () => { this.session.move = false; });
+        hue.addEventListener("touchcancel", () => { this.session.move = false; });
+        hue.addEventListener("touchmove", (e) => {
+          if(this.session.move){
+            this.hue.pos.x = e.layerX;
+            this.hue.pos.y = e.layerY;
+            marker.setAttribute("style", "top: " + (e.layerY) + "px;");
+            this.userClickOnHue();
+          }
+        });
         // add to
         this.hue.object = hue;
         this.hue.marker = marker;
@@ -1193,34 +1187,34 @@ class ColorPicker {
           marker.setAttribute("class", "spectrumMarker barMarker");
           marker.setAttribute("style", "top: 10px;");
 
-          alpha.addEventListener("mousedown", () => { this.session.moveAlpha = true; });
-          this.ele.object.addEventListener("mouseup", () => {
-            this.session.moveAlpha = false;
-          this.ele.object.classList.remove("select-none");
-        });
-          this.ele.object.addEventListener("mousemove", (e) => {
-            if(this.session.moveAlpha){
-              this.updatePosition(e, container, marker, "x", "alpha");
+          alpha.addEventListener("mousedown", () => { this.session.move = true; });
+          alpha.addEventListener("mouseup", () => { this.session.move = false; });
+          alpha.addEventListener("mouseleave", () => { this.session.move = false; });
+          alpha.addEventListener("mousemove", (e) => {
+            if(this.session.move){
+              this.alpha.pos.x = e.layerX;
+              this.alpha.pos.y = e.layerY;
+              marker.setAttribute("style", "top: " + (e.layerY) + "px;");
               this.userClickOnAlpha();
-              this.ele.object.classList.add("select-none");
             }
           });
           alpha.addEventListener("click", (e) => {
-            this.updatePosition(e, container, marker, "x", "alpha");
+            this.alpha.pos.x = e.layerX;
+            this.alpha.pos.y = e.layerY;
+            marker.setAttribute("style", "top: " + (e.layerY) + "px;");
             this.userClickOnAlpha();
           });
 
-          alpha.addEventListener("touchstart", () => { this.session.moveAlpha = true; });
-          this.ele.object.addEventListener("touchend", () => {
-            this.session.moveAlpha = false;
-            this.ele.object.classList.remove("select-none");
-          });
-          this.ele.object.addEventListener("touchmove", (e) => {
-            if(this.session.moveAlpha){
-            this.updatePosition(e.touches[0], container, marker, "x", "alpha", "mobile");
-            this.userClickOnAlpha();
-            this.ele.object.classList.add("select-none");
-          }
+          alpha.addEventListener("touchstart", () => { this.session.move = true; });
+          alpha.addEventListener("touchend", () => { this.session.move = false; });
+          alpha.addEventListener("touchcancel", () => { this.session.move = false; });
+          alpha.addEventListener("touchmove", (e) => {
+            if(this.session.move){
+              this.alpha.pos.x = e.layerX;
+              this.alpha.pos.y = e.layerY;
+              marker.setAttribute("style", "top: " + (e.layerY) + "px;");
+              this.userClickOnAlpha();
+            }
           });
 
         // add to
@@ -1271,71 +1265,4 @@ class ColorPicker {
       this.ele.container.append(container);
     }
 
-
-    updatePosition(t, e, m, d = "both", x, y = "desktop"){
-      // distance from container to edge of screen
-      let cont = this.ele.container.getBoundingClientRect();
-      // mouse position
-      let c = { "x": t.clientX - e.offsetLeft, "y": t.clientY - e.offsetTop };
-      // marker position
-      let pos = { "x": 10, "y": 10 };
-
-      if(y == "mobile"){
-        cont.x = 0;
-        cont.y = 0;
-      }
-
-      // inside
-      if( c.x >= 0 + cont.x && c.y >= 0 + cont.y && c.x <= e.offsetWidth + cont.x && c.y <= e.offsetHeight + cont.y){ pos = {"x": c.x - cont.x, "y": c.y - cont.y}; }
-      // top left corner
-      else if(c.x <= 0 + cont.x && c.y <= 0 + cont.y) { pos = {"x": 0, "y": 0}; }
-      // top right corner
-      else if(c.x >= e.offsetWidth + cont.x && c.y <= 0 + cont.y){ pos = {"x": e.offsetWidth, "y": 0}; }
-      // bottom right corner
-      else if(c.x >= e.offsetWidth + cont.x && c.y >= e.offsetHeight + cont.y){ pos = {"x": e.offsetWidth, "y": e.offsetHeight}; }
-      // bottom left corner
-      else if(c.x <= 0 + cont.x && c.y >= e.offsetHeight + cont.y){ pos = {"x": 0, "y": e.offsetHeight}; }
-      // bottom side
-      else if(c.y >= e.offsetHeight + cont.y){ pos = {"x": c.x - cont.x, "y": e.offsetHeight}; }
-      // right side
-      else if(c.x >= e.offsetWidth + cont.x && c.y >= 0 + cont.y){ pos = {"x": e.offsetWidth, "y": c.y - cont.y}; }
-      // top side
-      else if(c.x >= 0 + cont.x) { pos = {"x": c.x - cont.x, "y": 0}; }
-      // left side
-      else if(c.y >= 0 + cont.y) { pos = {"x": 0, "y": c.y - cont.y}; }
-
-      // set marker position
-      if(d == "both"){ m.setAttribute("style", "top: " + (pos.y) + "px; left: " + (pos.x) + "px;"); }
-      else if (d == "x"){ m.setAttribute("style", "top: " + (pos.y) + "px; left: 0px;"); }
-      else if (d == "y"){ m.setAttribute("style", "top: 0px; left: " + (pos.x) + "px;"); }
-
-      if(x == "alpha"){
-        this.alpha.pos.y = pos.y;
-      }
-      else if (x == "hue"){
-        if(pos.y == this.hue.height){
-          this.hue.pos.y = pos.y - 1;
-        } else {
-          this.hue.pos.y = pos.y;
-        }
-      }
-      else if (x == "spectrum"){
-        if(pos.y == this.spectrum.height && pos.x == this.spectrum.width){
-          this.spectrum.pos.y = pos.y - 1;
-          this.spectrum.pos.x = pos.x - 0.5;
-        }
-        if(pos.y == this.spectrum.height){
-          this.spectrum.pos.y = pos.y - 1;
-          this.spectrum.pos.x = pos.x;
-        }
-        if(pos.x == this.spectrum.width){
-          this.spectrum.pos.y = pos.y;
-          this.spectrum.pos.x = pos.x - 0.5;
-        }
-        else {
-          this.spectrum.pos.y = pos.y;
-          this.spectrum.pos.x = pos.x;
-        }
-      }
-    } // end updatePosition
 }

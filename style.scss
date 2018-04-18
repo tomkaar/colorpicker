@@ -3,6 +3,7 @@
 }
 html, body{
   box-sizing: border-box;
+  overflow: none;
 }
 
 .md-colorpicker-label{
@@ -40,6 +41,13 @@ html, body{
 
   &.active{ display: block; }
 
+  &.select-none{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
   .colorpicker-bg{
     position: absolute;
     top: 0;
@@ -51,7 +59,7 @@ html, body{
   }
   .colorpicker-container{
     position: fixed;
-    top: 150px;
+    margin-top: 150px;
     left: 50%;
     width: 355px;
     margin-left: -178px;
@@ -131,6 +139,7 @@ html, body{
       float: left;
     }
     .spectrum{
+      position: relative;
       width: 255px;
       height: 255px;
       margin: 0 0 0 10px;
@@ -138,6 +147,7 @@ html, body{
       cursor: crosshair;
     }
     .hue{
+      position: relative;
       width: 30px;
       height: 255px;
       margin-left: 10px;
@@ -145,6 +155,7 @@ html, body{
       cursor: crosshair;
     }
     .alpha{
+      position: relative;
       width: 30px;
       height: 255px;
       margin-left: 10px;
@@ -153,6 +164,10 @@ html, body{
       background-size: 16px;
       background-position: center;
       cursor: crosshair;
+    }
+
+    .hue:active, .spectrum:active, .alpha:active{
+      cursor: none;
     }
 
     .crossMarker{
@@ -171,7 +186,7 @@ html, body{
     .barMarker{
       box-sizing: border-box;
       position: absolute;
-      left: -2px;
+      margin-left: -2.5px;
       margin-top: -2px;
       width: 34px;
       height: 5px;
@@ -207,7 +222,7 @@ html, body{
   .flashMessage{
     display: none;
     position: absolute;
-    top: calc(100% + 10px);
+    margin-top: calc(100% + 10px);
     padding: 15px;
     width: 100%;
     text-align: center;
@@ -259,7 +274,7 @@ html, body{
 
     .colorpicker-container{
       position: relative;
-      top: 10px;
+      margin-top: 10px;
     }
   }
 }

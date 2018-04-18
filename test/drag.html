@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+
+
+  <style>
+
+  html, body{
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+  }
+  .spectrum-parent{
+    float: left;
+    box-sizing: border-box;
+    position: relative;
+    width: 255px;
+    height: 255px;
+    margin-top: 25px;
+    margin-left: 25px;
+    background: orangered;
+  }
+  .spectrum-marker{
+    box-sizing: border-box;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin-top: -6px;
+    margin-left: -6px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid blue;
+    border-radius: 50%;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.3), inset 0 0 2px 0 rgba(0, 0, 0, 0.3);
+  }
+
+
+
+  .alpha-parent{
+    float: left;
+    box-sizing: border-box;
+    position: relative;
+    width: 30px;
+    height: 255px;
+    margin-top: 25px;
+    margin-left: 10px;
+    background: orange;
+  }
+  .alpha-marker{
+    box-sizing: border-box;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin-top: -6px;
+    margin-left: -6px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid blue;
+    border-radius: 50%;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.3), inset 0 0 2px 0 rgba(0, 0, 0, 0.3);
+  }
+
+
+  </style>
+
+
+
+</head>
+<body>
+
+
+  <div id="spectrum-parent" class=" spectrum-parent">
+    <div id="spectrum-marker"class=" spectrum-marker"></div>
+  </div>
+
+  <div id="alpha-parent" class="alpha-parent">
+    <div id="alpha-marker"class="alpha-marker"></div>
+  </div>
+
+
+
+
+
+  <script src="drag.js"></script>
+
+</body>
+</html>
