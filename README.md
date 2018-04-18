@@ -7,12 +7,11 @@ You can find a working demo [here](https://tomkaar.github.io/colorpicker/)
 
 ## Features
 - Find new colors using the sliders
-- Paste and use already existing colors
-- Convert colors between `hex`, `rgb` and  `hsl`
-- Automatic updates while typing
-- Input Validation
-- Customizable behaviour
-- Choose a default color
+- Paste and use existing colors
+- Convert colors between `hex`, `rgb` and `hsl`
+- Color Value Validation
+- Update colorpicker using code/ functions
+- Customizable behaviour/ settings
 
 
 
@@ -21,33 +20,27 @@ This project uses HTML5 Canvas, Regex Patterns and ES6 syntax.
 
 
 
-## How to use
-Load the css and javascript files
+## Basic usage
+Load the css and javascript files and create a label and input field and use them to create a colorpicker.
 ```
-<link rel="stylesheet" href="PATH_TO_FILE/colorpicker.css">
-```
-```
-<script src="PATH_TO_FILE/colorpicker.js" defer></script>
-```
-Both the label and input are **required**.
-```
-<div id="colorpicker-label" class="md-colorpicker-label"></div>
-<input id="colorpicker-input" class="md-colorpicker-input" type="text">
+<link rel="stylesheet" href="colorpicker.css">
+<script src="colorpicker.js"></script>
 ```
 ```
-var label = document.getElementById("colorpicker-label");
-var input = document.getElementById("colorpicker-input");
+<div id="label" class="md-colorpicker-label"></div>
+<input id="input" class="md-colorpicker-input" type="text">
+```
+```
+var label = document.getElementById("label");
+var input = document.getElementById("input");
 
-```
-Create the colorpicker.
-```
 var colorpicker = new ColorPicker(label, input);
 ```
 
 
 
 ## Settings
-Just insert the settings as the third inparameter when creating the colorpicker. If a specific setting is not set the colorpicker will use the default settings.
+Insert the settings as the third parameter when creating the colorpicker. If a specific setting is not set the colorpicker will use the default settings.
 
 ```
 var settings = {
@@ -64,39 +57,65 @@ var colorpicker = new ColorPicker(label, input, settings);
 ```
 
 ### Options
-`defaultColor` | string | default: `#ff0000` <br>
-accepts `hex` | `rgb` | `rgba` | `hsl` | `hsla` <br>
-When loading the colorpicker for the first time, this is the default color it will display. <br>
+```
+defaultColor: "hex | rgb | rgba | hsl | hsla"
+```
+When loading the colorpicker for the first time, this is the default color it will display. Set to `#ff0000` by default.
 
 
-`defaultSelection` | string | default: `hex` <br>
-accepts `hex` | `rgb` | `hsl` <br>
-When loading the colorpicker for the first time, this is the value type that will be displayed in the input field. <br>
+
+```
+defaultSelection: "hex | rgb | hsl"
+```
+When loading the colorpicker for the first time, this is the value type that will be displayed in the input field. If the type don't match the `defaultColor` input the colorpicker will convert the value and print the type you choose here. Set to `hex` by default.
 
 
-`defaultHexAlphaChange` | string | default: `rgb` <br>
-accepts `hex` | `rgb` | `hsl` <br>
-When `hex` is selected and user changes the `alpha` value, the currently selected type will change to.. <br>
 
-`onHexSetAlphaToOne` | bool | default: `true` <br>
-When the user choose to display HEX value in the colorpicker, automatically set alpha to 1
+```
+defaultHexAlphaChange: "hex | rgb | hsl"
+```
+When `hex` is selected and user changes the `alpha` value, the currently selected type will change to this value. Set to `rgb` by default.
 
-`instantReload` | bool | default: `false` <br>
-If set to true the colorpicker will update every time a user type something in to the input field. If set to `false` the user have to press `enter` to update the current color.
 
-`showCopy` | bool | default: `true` <br>
-The clipboard function is still fairly new and the support is lacking, if you want to turn it off, set this to `false`.
+
+```
+onHexSetAlphaToOne: "true | false"
+```
+When the user choose to display HEX value in the colorpicker, automatically set alpha to 1 if the alpha value is not 1. Set to `true` by default.
+
+
+
+```
+instantReload: "true | false"
+```
+If set to `true`, the colorpicker will update every time a user type something in to the input field. If set to `false` the user have to press `enter` to update the current color. Set to `false` by default.
+
+
+
+```
+showCopy: "true | false"
+```
+The clipboard function is still fairly new and the support is lacking, if you want to turn it off, set this to `false`. Set to `true` by default.
+
+
+
+## Functions
+You might want to change or update the colorpicker using code.
+
+```
+colorpicker.setColor("VALUE");
+```
+This function will validate the input and if the validation returns true, update the colorpickers current color. This will update the input text and label. It accepts `hex` | `rgb` | `rgba` | `hsl` | `hsla` values as a `string`.
+
+
 
 
 
 ## ToDo
-- Touch Friendly
 - Input text on open picker
-- Functions - `setColor` ex. `colorpicker.setColor("value");`
-- Settings - BackgroundColor
+- setting -> darkMode
 
 
 
 ## Things to consider
-- Switch from Canvas to CSS Gradients for better browser support
-- Shortcut to close the picker (optional + setting -> default: false) ex. esc
+- Switch from Canvas to Gradients for better browser support

@@ -21,7 +21,11 @@ const settings2 = {
   "defaultHexAlphaChange": "rgb",
   "instantReload": true,
   "showCopy": true,
-  "onHexSetAlphaToOne": true
+  "onHexSetAlphaToOne": true,
+  "backgroundColor": "#ff0000"
 };
 
 const cp2 = new ColorPicker(label2, input2, settings2);
+
+
+cp2.setColor("#ff0000");

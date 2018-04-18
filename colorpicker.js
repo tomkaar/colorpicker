@@ -465,6 +465,14 @@ class ColorPicker {
     this.contrast();
   }
 
+  setColor(c){
+    let valid = this.validateValue(c);
+    if(valid.status == "valid"){
+      this.ele.input.value = c;
+      this.userInputUpdate();
+    }
+  }
+
 
   // print && update results
   printResults(c){
