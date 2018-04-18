@@ -57,56 +57,58 @@ var colorpicker = new ColorPicker(label, input, settings);
 ```
 
 ### Options
+**Default Color** <br> When loading the colorpicker for the first time, this is the default color it will display. Set to `#ff0000` by default.
 ```
 defaultColor: "hex | rgb | rgba | hsl | hsla"
 ```
-When loading the colorpicker for the first time, this is the default color it will display. Set to `#ff0000` by default.
 
+<br>
 
-
+**Default Selection** <br> When loading the colorpicker for the first time, this is the value type that will be displayed in the input field. If the type don't match the `defaultColor` input the colorpicker will convert the value and print the type you choose here. Set to `hex` by default.
 ```
 defaultSelection: "hex | rgb | hsl"
 ```
-When loading the colorpicker for the first time, this is the value type that will be displayed in the input field. If the type don't match the `defaultColor` input the colorpicker will convert the value and print the type you choose here. Set to `hex` by default.
 
+<br>
 
-
+**Default Hex Alpha Change** <br> When `hex` is selected and user changes the `alpha` value, the currently selected type will change to this value. Set to `rgb` by default.
 ```
 defaultHexAlphaChange: "hex | rgb | hsl"
 ```
-When `hex` is selected and user changes the `alpha` value, the currently selected type will change to this value. Set to `rgb` by default.
 
+<br>
 
-
+**On Hex Set Alpha To One** <br> When the user choose to display HEX value in the colorpicker, automatically set alpha to 1 if the alpha value is not 1. Set to `true` by default.
 ```
 onHexSetAlphaToOne: "true | false"
 ```
-When the user choose to display HEX value in the colorpicker, automatically set alpha to 1 if the alpha value is not 1. Set to `true` by default.
 
+<br>
 
-
+**Instant Reload** <br> If set to `true`, the colorpicker will update every time a user type something in to the input field. If set to `false` the user have to press `enter` to update the current color. Set to `false` by default.
 ```
 instantReload: "true | false"
 ```
-If set to `true`, the colorpicker will update every time a user type something in to the input field. If set to `false` the user have to press `enter` to update the current color. Set to `false` by default.
 
+<br>
 
-
+**Show Copy Button** <br> The clipboard function is still fairly new and the support is lacking, if you want to turn it off, set this to `false`. Set to `true` by default.
 ```
 showCopy: "true | false"
 ```
-The clipboard function is still fairly new and the support is lacking, if you want to turn it off, set this to `false`. Set to `true` by default.
 
-
+<br>
 
 ## Functions
 You might want to change or update the colorpicker using code.
 
+
+This function will validate the input and if the validation returns true, update the colorpickers current color. This will update the input text and label. It accepts `hex` | `rgb` | `rgba` | `hsl` | `hsla` values as a `string`.
 ```
 colorpicker.setColor("VALUE");
 ```
-This function will validate the input and if the validation returns true, update the colorpickers current color. This will update the input text and label. It accepts `hex` | `rgb` | `rgba` | `hsl` | `hsla` values as a `string`.
 
+<br>
 
 
 
