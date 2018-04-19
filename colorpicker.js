@@ -327,36 +327,36 @@ class ColorPicker {
   }
   userClickOnAlpha(){
     this.session.change = true;
-    let pos = this.getPositionAlpha();
-    let value = this.getValueAlpha(pos);
+    let pos = this.getPosition("a");
+    let value = this.getValue("a", pos);
     this.printResultsOnlyAlpha(value);
-    this.updateCurrentAlpha(value);
+    this.updateCurrent("a", value);
     this.onHexAlpha(value);
     this.contrast();
   }
   userClickOnSpectrum(){
     this.session.change = true;
-    let pos = this.getPositionSpectrum();
-    let value = this.getValueSpectrum(pos);
+    let pos = this.getPosition("s");
+    let value = this.getValue("s", pos);
 
     this.drawAlpha(value);
 
     this.printResults(value);
-    this.updateCurrentColor(value);
+    this.updateCurrent("c", value);
     this.contrast();
   }
   userClickOnHue(){
     this.session.change = true;
-    let pos = this.getPositionHue();
-    let value = this.getValueHue(pos);
+    let pos = this.getPosition("h");
+    let value = this.getValue("h", pos);
 
     this.drawSpectrum(value);
-    let sPos = this.getPositionSpectrum();
-    let spectrumValue = this.getValueSpectrum(sPos);
+    let sPos = this.getPosition("s");
+    let spectrumValue = this.getValue("s", sPos);
     this.drawAlpha(spectrumValue);
 
     this.printResults(spectrumValue);
-    this.updateCurrentColor(spectrumValue);
+    this.updateCurrent("c", spectrumValue);
     this.contrast();
   }
   userSelect(answer = "n"){
@@ -592,7 +592,6 @@ class ColorPicker {
   onHexAlpha(a = this.settings.onHexAlpha){
     if(this.session.selected == "hex" && this.session.currentColor.alpha != 1){
       this.settings.onHexAlpha = a;
-
       this.setResultButton(this.settings.defaultHexAlphaChange);
       this.session.change = true;
     }
@@ -647,7 +646,6 @@ class ColorPicker {
     }
   }
   copy(target){
-
     target.focus();
 
     var range = document.createRange();
@@ -663,7 +661,6 @@ class ColorPicker {
     window.getSelection().removeAllRanges();
   }
   flashMessage(message, type = "ok", time = 3000){
-
     this.ele.flashMessage.innerHTML = message;
     this.ele.flashMessage.classList.add("active");
 
@@ -672,9 +669,7 @@ class ColorPicker {
     else if (type == "info") { this.ele.flashMessage.style.backgroundColor = "#70a1ff"; }
     else if (type == "warn") { this.ele.flashMessage.style.backgroundColor = "#ffa502"; }
 
-    setTimeout(() => {
-      this.ele.flashMessage.classList.remove("active");
-    }, time);
+    setTimeout(() => { this.ele.flashMessage.classList.remove("active"); }, time);
   }
 
 
@@ -725,48 +720,80 @@ class ColorPicker {
     this.spectrum.pos.y = coordiantes.y;
   }
 
-  // update current value
-  updateCurrentAlpha(c){
-    this.session.currentColor.alpha = c;
-  }
-  updateCurrentColor(c){
-    this.session.currentColor.hsv = {"h": c.h, "s": c.s, "v": c.v};
+  // update current value in session
+  updateCurrent(t, c){
+    if(t == "a"){ this.session.currentColor.alpha = c; }
+    else if(t == "c"){ this.session.currentColor.hsv = {"h": c.h, "s": c.s, "v": c.v}; }
   }
 
   // get position (return)
-  getPositionAlpha(){
-    let pos = this.alpha.pos;
-    return pos;
-  }
-  getPositionHue(){
-    let pos = this.hue.pos;
-    return pos;
-  }
-  getPositionSpectrum(){
-    let pos = this.spectrum.pos;
-    return pos;
+  getPosition(t = "a"){
+    if(t == "a"){
+      let pos = this.alpha.pos;
+      return pos;
+    }
+    else if (t == "h"){
+      let pos = this.hue.pos;
+      return pos;
+    }
+    else if (t == "s"){
+      let pos = this.spectrum.pos;
+      return pos;
+    }
   }
 
-  // get value (return)
-  getValueAlpha(pos){
-    let alpha = (pos.y / this.alpha.height * -1 + 1);
-    return alpha;
-  }
-  getValueHue(pos){
-    let element = this.hue.object;
-    let ctx = element.getContext("2d");
-    let resp = ctx.getImageData(pos.x, pos.y, 1, 1);
-    let hsv = this.convert.rgbToHsv(resp.data[0], resp.data[1], resp.data[2]);
+  // get value (return) based of the current position of the marker (type, pos)
+  getValue(t = "a", pos){
+    if(t == "a"){
+      let alpha = (pos.y / this.alpha.height * -1 + 1);
+      return alpha;
+    }
+    else if (t== "h"){
+      let element = this.hue.object;
+      let ctx = element.getContext("2d");
+      let resp = ctx.getImageData(pos.x, pos.y, 1, 1);
+      let hsv = this.convert.rgbToHsv(resp.data[0], resp.data[1], resp.data[2]);
 
-    return {"h": hsv.h, "s": hsv.s, "v": hsv.v};
-  }
-  getValueSpectrum(pos){
-    let element = this.spectrum.object;
-    let ctx = element.getContext("2d");
-    let resp = ctx.getImageData(pos.x, pos.y, 1, 1);
-    let hsv = this.convert.rgbToHsv(resp.data[0], resp.data[1], resp.data[2]);
+      return {"h": hsv.h, "s": hsv.s, "v": hsv.v};
+    }
+    else if (t == "s"){
+      let element = this.spectrum.object;
+      let ctx = element.getContext("2d");
+      let resp = ctx.getImageData(pos.x, pos.y, 1, 1);
+      let hsv = this.convert.rgbToHsv(resp.data[0], resp.data[1], resp.data[2]);
 
-    return {"h": hsv.h, "s": hsv.s, "v": hsv.v};
+      return {"h": hsv.h, "s": hsv.s, "v": hsv.v};
+    }
+  }
+
+  // convert values (c, from, to) (hex|rgb|rgba|hsl|hsla) (return)
+  convert(c, from, to){
+    if(from == "hex"){
+      if(to == "rgb"){ return this.convert.hexToRgb(c); }
+      if(to == "rgba"){ let a = this.convert.hexToRgb(c); return a; }
+      if(to == "hsl"){}
+      if(to == "hsla"){}
+    }
+    if(from == "rgb"){
+      if(to == "hex"){}
+      if(to == "hsl"){}
+      if(to == "hsla"){}
+    }
+    if(from == "rgba"){
+      if(to == "hex"){}
+      if(to == "hsl"){}
+      if(to == "hsla"){}
+    }
+    if(from == "hsl"){
+      if(to == "hex"){}
+      if(to == "rgb"){}
+      if(to == "rgba"){}
+    }
+    if(from == "hsla"){
+      if(to == "hex"){}
+      if(to == "rgb"){}
+      if(to == "rgba"){}
+    }
   }
 
   // draw
@@ -832,7 +859,7 @@ class ColorPicker {
     ctx.fill();
   }
 
-  // settings
+  // settings (update default settings)
   setting(settings){
     for (var key in settings){
       if (settings.hasOwnProperty(key)) {
@@ -866,9 +893,7 @@ class ColorPicker {
               alpha = v.a;
             }
           }
-          else {
-            console.log("Cannot set default value");
-          }
+          else { console.log("Cannot set default value"); }
 
           // set color
           this.settings.defaultColor.hsv = hsv;
@@ -1270,80 +1295,81 @@ class ColorPicker {
 
     }
     createFlashMessage(){
-      let container = document.createElement("div");
-        container.setAttribute("class", "flashMessage");
-        container.innerHTML = "Flash Message";
+        let container = document.createElement("div");
+          container.setAttribute("class", "flashMessage");
+          container.innerHTML = "Flash Message";
 
-      // append to
-      this.ele.flashMessage = container;
-      this.ele.container.append(container);
+        // append to
+        this.ele.flashMessage = container;
+        this.ele.container.append(container);
+      }
+
+  // update position when draging the marker over the sliders
+  // (touch//click event, container, marker, both(both, x, y), name of slider, if mobile)
+  updatePosition(t, e, m, d = "both", x, y = "desktop"){
+    // distance from container to edge of screen
+    let cont = this.ele.container.getBoundingClientRect();
+    // mouse position
+    let c = { "x": t.clientX - e.offsetLeft, "y": t.clientY - e.offsetTop };
+    // marker position
+    let pos = { "x": 10, "y": 10 };
+
+    if(y == "mobile"){
+      cont.x = 0;
+      cont.y = 0;
     }
 
+    // inside
+    if( c.x >= 0 + cont.x && c.y >= 0 + cont.y && c.x <= e.offsetWidth + cont.x && c.y <= e.offsetHeight + cont.y){ pos = {"x": c.x - cont.x, "y": c.y - cont.y}; }
+    // top left corner
+    else if(c.x <= 0 + cont.x && c.y <= 0 + cont.y) { pos = {"x": 0, "y": 0}; }
+    // top right corner
+    else if(c.x >= e.offsetWidth + cont.x && c.y <= 0 + cont.y){ pos = {"x": e.offsetWidth, "y": 0}; }
+    // bottom right corner
+    else if(c.x >= e.offsetWidth + cont.x && c.y >= e.offsetHeight + cont.y){ pos = {"x": e.offsetWidth, "y": e.offsetHeight}; }
+    // bottom left corner
+    else if(c.x <= 0 + cont.x && c.y >= e.offsetHeight + cont.y){ pos = {"x": 0, "y": e.offsetHeight}; }
+    // bottom side
+    else if(c.y >= e.offsetHeight + cont.y){ pos = {"x": c.x - cont.x, "y": e.offsetHeight}; }
+    // right side
+    else if(c.x >= e.offsetWidth + cont.x && c.y >= 0 + cont.y){ pos = {"x": e.offsetWidth, "y": c.y - cont.y}; }
+    // top side
+    else if(c.x >= 0 + cont.x) { pos = {"x": c.x - cont.x, "y": 0}; }
+    // left side
+    else if(c.y >= 0 + cont.y) { pos = {"x": 0, "y": c.y - cont.y}; }
 
-    updatePosition(t, e, m, d = "both", x, y = "desktop"){
-      // distance from container to edge of screen
-      let cont = this.ele.container.getBoundingClientRect();
-      // mouse position
-      let c = { "x": t.clientX - e.offsetLeft, "y": t.clientY - e.offsetTop };
-      // marker position
-      let pos = { "x": 10, "y": 10 };
+    // set marker position
+    if(d == "both"){ m.setAttribute("style", "top: " + (pos.y) + "px; left: " + (pos.x) + "px;"); }
+    else if (d == "x"){ m.setAttribute("style", "top: " + (pos.y) + "px; left: 0px;"); }
+    else if (d == "y"){ m.setAttribute("style", "top: 0px; left: " + (pos.x) + "px;"); }
 
-      if(y == "mobile"){
-        cont.x = 0;
-        cont.y = 0;
+    if(x == "alpha"){
+      this.alpha.pos.y = pos.y;
+    }
+    else if (x == "hue"){
+      if(pos.y == this.hue.height){
+        this.hue.pos.y = pos.y - 1;
+      } else {
+        this.hue.pos.y = pos.y;
       }
-
-      // inside
-      if( c.x >= 0 + cont.x && c.y >= 0 + cont.y && c.x <= e.offsetWidth + cont.x && c.y <= e.offsetHeight + cont.y){ pos = {"x": c.x - cont.x, "y": c.y - cont.y}; }
-      // top left corner
-      else if(c.x <= 0 + cont.x && c.y <= 0 + cont.y) { pos = {"x": 0, "y": 0}; }
-      // top right corner
-      else if(c.x >= e.offsetWidth + cont.x && c.y <= 0 + cont.y){ pos = {"x": e.offsetWidth, "y": 0}; }
-      // bottom right corner
-      else if(c.x >= e.offsetWidth + cont.x && c.y >= e.offsetHeight + cont.y){ pos = {"x": e.offsetWidth, "y": e.offsetHeight}; }
-      // bottom left corner
-      else if(c.x <= 0 + cont.x && c.y >= e.offsetHeight + cont.y){ pos = {"x": 0, "y": e.offsetHeight}; }
-      // bottom side
-      else if(c.y >= e.offsetHeight + cont.y){ pos = {"x": c.x - cont.x, "y": e.offsetHeight}; }
-      // right side
-      else if(c.x >= e.offsetWidth + cont.x && c.y >= 0 + cont.y){ pos = {"x": e.offsetWidth, "y": c.y - cont.y}; }
-      // top side
-      else if(c.x >= 0 + cont.x) { pos = {"x": c.x - cont.x, "y": 0}; }
-      // left side
-      else if(c.y >= 0 + cont.y) { pos = {"x": 0, "y": c.y - cont.y}; }
-
-      // set marker position
-      if(d == "both"){ m.setAttribute("style", "top: " + (pos.y) + "px; left: " + (pos.x) + "px;"); }
-      else if (d == "x"){ m.setAttribute("style", "top: " + (pos.y) + "px; left: 0px;"); }
-      else if (d == "y"){ m.setAttribute("style", "top: 0px; left: " + (pos.x) + "px;"); }
-
-      if(x == "alpha"){
-        this.alpha.pos.y = pos.y;
+    }
+    else if (x == "spectrum"){
+      if(pos.y == this.spectrum.height && pos.x == this.spectrum.width){
+        this.spectrum.pos.y = pos.y - 1;
+        this.spectrum.pos.x = pos.x - 0.5;
       }
-      else if (x == "hue"){
-        if(pos.y == this.hue.height){
-          this.hue.pos.y = pos.y - 1;
-        } else {
-          this.hue.pos.y = pos.y;
-        }
+      if(pos.y == this.spectrum.height){
+        this.spectrum.pos.y = pos.y - 1;
+        this.spectrum.pos.x = pos.x;
       }
-      else if (x == "spectrum"){
-        if(pos.y == this.spectrum.height && pos.x == this.spectrum.width){
-          this.spectrum.pos.y = pos.y - 1;
-          this.spectrum.pos.x = pos.x - 0.5;
-        }
-        if(pos.y == this.spectrum.height){
-          this.spectrum.pos.y = pos.y - 1;
-          this.spectrum.pos.x = pos.x;
-        }
-        if(pos.x == this.spectrum.width){
-          this.spectrum.pos.y = pos.y;
-          this.spectrum.pos.x = pos.x - 0.5;
-        }
-        else {
-          this.spectrum.pos.y = pos.y;
-          this.spectrum.pos.x = pos.x;
-        }
+      if(pos.x == this.spectrum.width){
+        this.spectrum.pos.y = pos.y;
+        this.spectrum.pos.x = pos.x - 0.5;
       }
-    } // end updatePosition
+      else {
+        this.spectrum.pos.y = pos.y;
+        this.spectrum.pos.x = pos.x;
+      }
+    }
+  } // end updatePosition
 }
