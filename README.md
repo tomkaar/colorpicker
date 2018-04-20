@@ -49,7 +49,8 @@ var settings = {
   "defaultHexAlphaChange": "rgb",
   "onHexSetAlphaToOne": true,
   "instantReload": false,
-  "showCopy": true
+  "showCopy": true,
+  "darkMode": true
 };
 ```
 ```
@@ -96,6 +97,12 @@ instantReload: "true | false"
 ```
 showCopy: "true | false"
 ```
+<br>
+
+**Dark mode** <br> What the colorpicker to match you dark theme? `false` by default.
+```
+darkMode: "true | false"
+```
 
 <br>
 
@@ -115,7 +122,6 @@ colorpicker.setColor("VALUE");
 
 ## ToDo
 - Input text on open picker
-- setting -> darkMode
 
 
 
