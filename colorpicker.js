@@ -9,6 +9,7 @@ class ColorPicker {
       "instantReload": false,
       "showCopy": true,
       "onHexSetAlphaToOne": true,
+      "darkMode": false,
       "defaultColor": {
         "hsv":  {"h": 0, "s": 100, "v": 100},
         "alpha": 1
@@ -727,6 +728,7 @@ class ColorPicker {
   }
 
   // convert values (c, from, to) (hex|rgb|rgba|hsl|hsla) (return)
+    // accepts string values only
   convertValue(c, from, to){
     if(from == "hex"){
       if(to == "rgb"){
@@ -959,6 +961,12 @@ class ColorPicker {
             this.settings.onHexSetAlphaToOne = settings[key];
           }
         }
+        else if(key == "darkMode"){
+          if(settings[key] == true || settings[key] == false){
+            if(settings[key] == true){ this.settings.darkMode = true; }
+            else { this.settings.darkMode = false; }
+          }
+        }
       }
     }
   }
@@ -1015,6 +1023,7 @@ class ColorPicker {
       // wrapper (object)
       let wrapper = document.createElement("div");
         wrapper.setAttribute("class", "md-colorpicker active");
+        if(this.settings.darkMode == true) { wrapper.classList.add("md-colorpicker-dark"); }
       // bg
       let bg = document.createElement("div");
         bg.setAttribute("class", "colorpicker-bg");

@@ -22,7 +22,8 @@ const settings2 = {
   "instantReload": true,
   "showCopy": true,
   "onHexSetAlphaToOne": true,
-  "backgroundColor": "#ff0000"
+  "backgroundColor": "#ff0000",
+  "darkMode": true
 };
 
 const cp2 = new ColorPicker(label2, input2, settings2);

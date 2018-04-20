@@ -186,7 +186,7 @@ html, body{
     .barMarker{
       box-sizing: border-box;
       position: absolute;
-      margin-left: -2.5px;
+      margin-left: -2px;
       margin-top: -2px;
       width: 34px;
       height: 5px;
@@ -275,6 +275,38 @@ html, body{
     .colorpicker-container{
       position: relative;
       margin-top: 10px;
+    }
+  }
+}
+
+
+
+
+.md-colorpicker-dark{
+
+  .colorpicker-container{
+    background: #333333;
+
+    .pickers{
+      background: #333333;
+
+      .crossMarker, .barMarker{
+        border-color: #222222;
+        box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
+      }
+      .alpha{
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABS2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDAgNzkuMTYwNDUxLCAyMDE3LzA1LzA2LTAxOjA4OjIxICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+LUNEtwAAAFBJREFUWIXt1rEJADAIRNEkWDiJ+49nl2xwViYp/rWH8BAEZ0TsIZKZqh7uLvtqfsn2QgAAAGDdd17NP98AAAAArPvO+QcAAPgewD8AAACAAzo7GZ/qYbcmAAAAAElFTkSuQmCC');
+        background-size: 16px;
+        background-position: center;
+      }
+    }
+    .select{
+      background: black;
+      button{
+        color: white;
+        background: #333333;
+        &:hover{ background: #292929; }
+      }
     }
   }
 }
