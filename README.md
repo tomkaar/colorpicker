@@ -49,7 +49,8 @@ var settings = {
   "defaultHexAlphaChange": "rgb",
   "onHexSetAlphaToOne": true,
   "instantReload": false,
-  "showCopy": true
+  "showCopy": true,
+  "darkMode": true
 };
 ```
 ```
@@ -95,6 +96,12 @@ instantReload: "true | false"
 **Show Copy Button** <br> The clipboard function is still fairly new and the support is lacking, if you want to turn it off, set this to `false`. Set to `true` by default.
 ```
 showCopy: "true | false"
+```
+<br>
+
+**Dark mode** <br> What the colorpicker to match you dark theme? `false` by default.
+```
+darkMode: "true | false"
 ```
 
 <br>

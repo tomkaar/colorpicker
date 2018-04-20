@@ -19,10 +19,9 @@ const settings2 = {
   "defaultColor": "rgba(0, 200, 0, 0.50)",
   "defaultSelection": "rgb",
   "defaultHexAlphaChange": "rgb",
+  "onHexSetAlphaToOne": true,
   "instantReload": true,
   "showCopy": true,
-  "onHexSetAlphaToOne": true,
-  "backgroundColor": "#ff0000",
   "darkMode": true
 };
 
