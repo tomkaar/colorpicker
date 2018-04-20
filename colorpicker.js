@@ -32,7 +32,7 @@ class ColorPicker {
 
     this.info = {
       "patterns": {
-        "hex": /\b#?([0-9A-Fa-f]){6}\b/i,
+        "hex": /^[#]([0-9A-Fa-f]){6}$/i,
         "rgb": /([R][G][B][(]\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\s*,\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\s*,\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])[)]);?/i,
         "rgba": /([R][G][B][A][(]\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\s*,\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\s*,\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(\s*,\s*((0\.[0-9]{0,300})|(0)|(1\.[0-9]{0,300})|(1)))[)]);?/i,
         "hsl": /hsl\(\s*(\d+)\s*,\s*(\d+(?:\.\d+)?%)\s*,\s*(\d+(?:\.\d+)?%)\);?/i,
@@ -277,29 +277,9 @@ class ColorPicker {
       var alpha = 1;
 
       if(valid.status == "valid"){
-        if(valid.type == "hex"){
-          let rgb = this.convert.hexToRgb(input);
-          hsv = this.convert.rgbToHsv(rgb.r, rgb.g, rgb.b);
-        }
-        else if(valid.type == "rgb"){
-          let v = this.getNumber(input, "rgb");
-          hsv = this.convert.rgbToHsv(v.r, v.g, v.b);
-        }
-        else if(valid.type == "rgba"){
-          let v = this.getNumber(input, "rgba");
-          hsv = this.convert.rgbToHsv(v.r, v.g, v.b);
-          alpha = v.a;
-        }
-        else if(valid.type == "hsl"){
-          let v = this.getNumber(input, "hsl");
-          let rgb = this.convert.hslToRgb(v.h/360, v.s/100, v.l/100);
-          hsv = this.convert.rgbToHsv(rgb.r, rgb.g, rgb.b);
-        }
-        else if(valid.type == "hsla"){
-          let v = this.getNumber(input, "hsla");
-          let rgb = this.convert.hslToRgb(v.h/360, v.s/100, v.l/100);
-          hsv = this.convert.rgbToHsv(rgb.r, rgb.g, rgb.b);
-          alpha = v.a;
+        hsv = this.convertValue(input, valid.type, "hsv");
+        if(valid.type == "rgba" || valid.type == "hsla"){
+          alpha = this.getNumber(input, valid.type).a;
         }
       } else {
         hsv = this.settings.defaultColor.hsv;
@@ -414,35 +394,16 @@ class ColorPicker {
     var alpha = 1;
 
     if(valid.status == "valid"){
-      if(valid.type == "hex"){
-        let rgb = this.convert.hexToRgb(input);
-        hsv = this.convert.rgbToHsv(rgb.r, rgb.g, rgb.b);
-        bg = "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 1)";
-      }
-      else if(valid.type == "rgb"){
-        let v = this.getNumber(input, "rgb");
-        hsv = this.convert.rgbToHsv(v.r, v.g, v.b);
-        bg = "rgba(" + v.r + ", " + v.g + ", " + v.b + ", 1)";
-      }
-      else if(valid.type == "rgba"){
-        let v = this.getNumber(input, "rgba");
-        hsv = this.convert.rgbToHsv(v.r, v.g, v.b);
-        alpha = v.a;
-        bg = "rgba(" + v.r + ", " + v.g + ", " + v.b + ", " + v.a + ")";
-      }
-      else if(valid.type == "hsl"){
-        let v = this.getNumber(input, "hsl");
-        let rgb = this.convert.hslToRgb(v.h/360, v.s/100, v.l/100);
-        hsv = this.convert.rgbToHsv(rgb.r, rgb.g, rgb.b);
-        bg = "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 1)";
-      }
-      else if(valid.type == "hsla"){
-        let v = this.getNumber(input, "hsla");
-        let rgb = this.convert.hslToRgb(v.h/360, v.s/100, v.l/100);
-        hsv = this.convert.rgbToHsv(rgb.r, rgb.g, rgb.b);
-        alpha = v.a;
-        bg = "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", " + v.a + ")";
-      }
+
+        hsv = this.convertValue(input, valid.type, "hsv");
+        let rgb = this.convertValue(input, valid.type, "rgba");
+
+        if(valid.type == "rgba" || valid.type == "hsla"){
+          alpha = this.getNumber(input, valid.type).a;
+        }
+
+        bg = "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + "," + alpha + ")";
+
     } else {
       hsv = this.settings.defaultColor.hsv;
       let rgb = this.convert.hsvToRgb(hsv.h, hsv.s, hsv.v);
@@ -465,6 +426,7 @@ class ColorPicker {
     this.contrast();
   }
 
+  // functions
   setColor(c){
     let valid = this.validateValue(c);
     if(valid.status == "valid"){
@@ -604,7 +566,6 @@ class ColorPicker {
     else if(this.info.patterns.hsl.test(value)){ return {"status": "valid", "type": "hsl"}; }
     else if(this.info.patterns.hsla.test(value)){ return {"status": "valid", "type": "hsla"}; }
     else {
-      this.flashMessage("This value is not valid", "error", 3000);
       return{"status": "invalid"};
     }
   }
@@ -646,7 +607,6 @@ class ColorPicker {
     }
   }
   copy(target){
-    target.focus();
 
     var range = document.createRange();
     range.selectNode(target);
@@ -767,32 +727,122 @@ class ColorPicker {
   }
 
   // convert values (c, from, to) (hex|rgb|rgba|hsl|hsla) (return)
-  convert(c, from, to){
+  convertValue(c, from, to){
     if(from == "hex"){
-      if(to == "rgb"){ return this.convert.hexToRgb(c); }
-      if(to == "rgba"){ let a = this.convert.hexToRgb(c); return a; }
-      if(to == "hsl"){}
-      if(to == "hsla"){}
+      if(to == "rgb"){
+        return this.convert.hexToRgb(c);
+      }
+      if(to == "rgba"){
+        let a = this.convert.hexToRgb(c);
+        return {"r": a.r, "g": a.g, "b": a.b, "a": 1};
+      }
+      if(to == "hsl"){
+        let a = this.convert.hexToRgb(c);
+        return this.convert.rgbToHsl(a.r, a.g, a.b);
+        }
+      if(to == "hsla"){
+        let a = this.convert.hexToRgb(c);
+        let b = this.convert.rgbToHsl(a.r, a.g, a.b);
+        return {"h": b.h, "s": b.s, "l": b.l, "a": 1}
+      }
+      if(to == "hsv"){
+        let a = this.convert.hexToRgb(c);
+        return this.convert.rgbToHsv(a.r, a.g, a.b);
+      }
+      if(to == "hex"){ return this.getNumber(c, from); }
     }
     if(from == "rgb"){
-      if(to == "hex"){}
-      if(to == "hsl"){}
-      if(to == "hsla"){}
+      if(to == "hex"){
+        let a = this.getNumber(c, from);
+        return this.convert.rgbToHex(a.r, a.g, a.b);
+      }
+      if(to == "hsl"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.rgbToHsl(a.r, a.g, a.b);
+        return {"h": b.h, "s": b.s, "l": b.l};
+      }
+      if(to == "hsla"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.rgbToHsl(a.r, a.g, a.b);
+        return {"h": b.h, "s": b.s, "l": b.l, "a": 1};
+      }
+      if(to == "hsv"){
+        let a = this.getNumber(c, from);
+        return this.convert.rgbToHsv(a.r, a.g, a.b);
+      }
+      if(to == "rgb"){ return this.getNumber(c, from); }
+      if(to == "rgba"){ return this.getNumber(c, from); }
     }
     if(from == "rgba"){
-      if(to == "hex"){}
-      if(to == "hsl"){}
-      if(to == "hsla"){}
+      if(to == "hex"){
+        let a = this.getNumber(c, from);
+        return this.convert.rgbToHex(a.r, a.g, a.b);
+      }
+      if(to == "hsl"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.rgbToHsl(a.r, a.g, a.b);
+        return {"h": b.h, "s": b.s, "l": b.l};
+      }
+      if(to == "hsla"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.rgbToHsl(a.r, a.g, a.b);
+        return {"h": b.h, "s": b.s, "l": b.l, "a": a.a};
+      }
+      if(to == "hsv"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.rgbToHsv(a.r, a.g, a.b);
+        return {"h": b.h, "s": b.s, "v": b.v};
+      }
+      if(to == "rgb"){ return this.getNumber(c, from); }
+      if(to == "rgba"){ return this.getNumber(c, from); }
     }
     if(from == "hsl"){
-      if(to == "hex"){}
-      if(to == "rgb"){}
-      if(to == "rgba"){}
+      if(to == "hex"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.hslToRgb(a.h/360, a.s/100, a.l/100);
+        return this.convert.rgbToHex(Math.round(b.r), Math.round(b.g), Math.round(b.b));
+      }
+      if(to == "rgb"){
+        let a = this.getNumber(c, from);
+        return this.convert.hslToRgb(a.h/360, a.s/100, a.l/100);
+      }
+      if(to == "rgba"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.hslToRgb(a.h/360, a.s/100, a.l/100);
+        return {"r": b.r, "g": b.g, "b": b.b, "a": 1};
+      }
+      if(to == "hsv"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.hslToRgb(a.h/360, a.s/100, a.l/100);
+        return this.convert.rgbToHsv(b.r, b.g, b.b);
+      }
+      if(to == "hsl"){ return this.getNumber(c, from); }
+      if(to == "hsla"){ return this.getNumber(c, from); }
     }
     if(from == "hsla"){
-      if(to == "hex"){}
-      if(to == "rgb"){}
-      if(to == "rgba"){}
+      if(to == "hex"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.hslToRgb(a.h/360, a.s/100, a.l/100);
+        return this.convert.rgbToHex(Math.round(b.r), Math.round(b.g), Math.round(b.b));
+      }
+      if(to == "rgb"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.hslToRgb(a.h/360, a.s/100, a.l/100);
+        return {"r": b.r, "g": b.g, "b": b.b};
+      }
+      if(to == "rgba"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.hslToRgb(a.h/360, a.s/100, a.l/100);
+        return {"r": b.r, "g": b.g, "b": b.b, "a": 1};
+      }
+      if(to == "hsv"){
+        let a = this.getNumber(c, from);
+        let b = this.convert.hslToRgb(a.h/360, a.s/100, a.l/100);
+        let d = this.convert.rgbToHsv(b.r, b.g, b.b);
+        return {"h": d.h, "s": d.s, "v": d.v};
+      }
+      if(to == "hsl"){ return this.getNumber(c, from); }
+      if(to == "hsla"){ return this.getNumber(c, from); }
     }
   }
 
@@ -864,36 +914,19 @@ class ColorPicker {
     for (var key in settings){
       if (settings.hasOwnProperty(key)) {
         if(key == "defaultColor"){
+
           let valid = this.validateValue(settings[key]);
-          let hsv, alpha = 1;
+          var hsv, alpha = 1;
 
           if(valid.status == "valid"){
-            if(valid.type == "hex"){
-              let rgb = this.convert.hexToRgb(settings[key]);
-              hsv = this.convert.rgbToHsv(rgb.r, rgb.g, rgb.b);
-            }
-            else if(valid.type == "rgb"){
-              let v = this.getNumber(settings[key], "rgb");
-              hsv = this.convert.rgbToHsv(v.r, v.g, v.b);
-            }
-            else if(valid.type == "rgba"){
-              let v = this.getNumber(settings[key], "rgba");
-              hsv = this.convert.rgbToHsv(v.r, v.g, v.b);
-              alpha = v.a;
-            }
-            else if(valid.type == "hsl"){
-              let v = this.getNumber(settings[key], "hsl");
-              let rgb = this.convert.hslToRgb(v.h/360, v.s/100, v.l/100);
-              hsv = this.convert.rgbToHsv(rgb.r, rgb.g, rgb.b);
-            }
-            else if(valid.type == "hsla"){
-              let v = this.getNumber(settings[key], "hsla");
-              let rgb = this.convert.hslToRgb(v.h/360, v.s/100, v.l/100);
-              hsv = this.convert.rgbToHsv(rgb.r, rgb.g, rgb.b);
-              alpha = v.a;
+            hsv = this.convertValue(settings[key], valid.type, "hsv");
+            if(valid.type == "rgba" || valid.type == "hsla"){
+              alpha = this.getNumber(settings[key], valid.type).a;
             }
           }
-          else { console.log("Cannot set default value"); }
+          else {
+            console.log("Cannot set default value on the colorpicker.");
+            hsv = this.settings.defaultColor.hsv }
 
           // set color
           this.settings.defaultColor.hsv = hsv;
@@ -1120,35 +1153,35 @@ class ColorPicker {
           marker.setAttribute("class", "spectrumMarker crossMarker");
           marker.setAttribute("style", "top: 10px; left: 245px; ");
 
-          spectrum.addEventListener("mousedown", () => { this.session.moveSpectrum = true; });
-          this.ele.object.addEventListener("mouseup", () => {
-            this.session.moveSpectrum = false;
-            this.ele.object.classList.remove("select-none");
-          });
-          this.ele.object.addEventListener("mousemove", (e) => {
-            if(this.session.moveSpectrum){
-              this.updatePosition(e, container, marker, "both", "spectrum");
-              this.userClickOnSpectrum();
-              this.ele.object.classList.add("select-none");
-            }
-          });
-          spectrum.addEventListener("click", (e) => {
+        spectrum.addEventListener("mousedown", () => { this.session.moveSpectrum = true; });
+        this.ele.object.addEventListener("mouseup", () => {
+          this.session.moveSpectrum = false;
+          this.ele.object.classList.remove("select-none");
+        });
+        this.ele.object.addEventListener("mousemove", (e) => {
+          if(this.session.moveSpectrum){
             this.updatePosition(e, container, marker, "both", "spectrum");
             this.userClickOnSpectrum();
-          });
+            this.ele.object.classList.add("select-none");
+          }
+        });
+        spectrum.addEventListener("click", (e) => {
+          this.updatePosition(e, container, marker, "both", "spectrum");
+          this.userClickOnSpectrum();
+        });
 
-          spectrum.addEventListener("touchstart", () => { this.session.moveSpectrum = true; });
-          this.ele.object.addEventListener("touchend", () => {
-            this.session.moveSpectrum = false;
-            this.ele.object.classList.remove("select-none");
-          });
-          this.ele.object.addEventListener("touchmove", (e) => {
-            if(this.session.moveSpectrum){
+        spectrum.addEventListener("touchstart", () => { this.session.moveSpectrum = true; });
+        this.ele.object.addEventListener("touchend", () => {
+          this.session.moveSpectrum = false;
+          this.ele.object.classList.remove("select-none");
+        });
+        this.ele.object.addEventListener("touchmove", (e) => {
+          if(this.session.moveSpectrum){
             this.updatePosition(e.touches[0], container, marker, "both", "spectrum", "mobile");
             this.userClickOnSpectrum();
             this.ele.object.classList.add("select-none");
           }
-          });
+        });
 
         // save to
         this.spectrum.object = spectrum;
@@ -1371,5 +1404,6 @@ class ColorPicker {
         this.spectrum.pos.x = pos.x;
       }
     }
+
   } // end updatePosition
 }

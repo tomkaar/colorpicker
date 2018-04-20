@@ -16,7 +16,7 @@ const cp = new ColorPicker(label, input, settings);
 const label2 = document.getElementById("colorpicker-label2");
 const input2 = document.getElementById("colorpicker-input2");
 const settings2 = {
-  "defaultColor": "rgba(255, 0, 0, 0.5)",
+  "defaultColor": "rgba(0, 200, 0, 0.50)",
   "defaultSelection": "rgb",
   "defaultHexAlphaChange": "rgb",
   "instantReload": true,
@@ -28,4 +28,4 @@ const settings2 = {
 const cp2 = new ColorPicker(label2, input2, settings2);
 
 
-cp2.setColor("#ff0000");
+cp2.setColor("#rgba(0, 200, 0, 0.3)");
