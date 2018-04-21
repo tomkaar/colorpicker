@@ -435,6 +435,16 @@ class ColorPicker {
       this.userInputUpdate();
     }
   }
+  darkMode(a){
+    if(a == true){
+      this.settings.darkMode = true;
+      this.ele.object.classList.add("md-colorpicker-dark");
+    }
+    else if(a == false) {
+      this.settings.darkMode = false;
+      this.ele.object.classList.remove("md-colorpicker-dark");
+    }
+  }
 
 
   // print && update results
@@ -848,7 +858,7 @@ class ColorPicker {
     }
   }
 
-  // draw
+  // draw (c = @object = {h, s, v} )
   drawHue(){
     let ele = this.hue.object;
     let ctx = ele.getContext("2d");
@@ -1001,15 +1011,14 @@ class ColorPicker {
     this.userSelect("y");
   }
     createLabel(){
-      this.ele.label.addEventListener("click", () => {
-        this.userOpen();
-      });
+      this.ele.label.addEventListener("click", () => { this.userOpen(); });
     }
     createInput(){
       this.ele.input.addEventListener("keyup", (e) => {
         if(e.keyCode == 13 || this.settings.instantReload == true){
           this.userInputUpdate();
         }
+        // validate current input and throw visible error if input is not valid
         let input = this.ele.input.value;
         let valid = this.validateValue(input);
         if(valid.status != "valid"){
@@ -1031,9 +1040,7 @@ class ColorPicker {
       let container = document.createElement("div");
         container.setAttribute("class", "colorpicker-container");
 
-        bg.addEventListener("click", () => {
-          this.userOpen();
-        });
+      bg.addEventListener("click", () => { this.userOpen(); });
 
       this.ele.object = wrapper;
       this.ele.container = container;
@@ -1043,13 +1050,10 @@ class ColorPicker {
       document.body.append(wrapper);
     }
     createResults(){
-      // let container
       let container = document.createElement("div");
         container.setAttribute("class", "results");
-      // let view
       let view = document.createElement("div");
         view.setAttribute("class", "results-view");
-      // let buttons
       let buttons = document.createElement("div");
         buttons.setAttribute("class", "results-buttons");
 
@@ -1077,12 +1081,10 @@ class ColorPicker {
           hsl.setAttribute("class", "results-view-hsl");
           hsl.innerHTML = "HSLA";
 
-        // save to
         this.ele.results.hexView = hex;
         this.ele.results.rgbView = rgb;
         this.ele.results.hslView = hsl;
 
-        // append to
         container.append(hex);
         container.append(rgb);
         container.append(hsl);
@@ -1097,26 +1099,20 @@ class ColorPicker {
         let hsl = document.createElement("button");
           hsl.innerHTML = "HSLA";
 
-          hex.addEventListener("click", () => {
-            this.setResultButton("hex");
-            if(this.settings.onHexSetAlphaToOne == true){
-              this.printResultsOnlyAlpha(1);
-              this.alpha.marker.style.top = "0px";
-            }
-          });
-          rgb.addEventListener("click", () => {
-            this.setResultButton("rgb");
-          });
-          hsl.addEventListener("click", () => {
-            this.setResultButton("hsl");
-          });
+        hex.addEventListener("click", () => {
+          this.setResultButton("hex");
+          if(this.settings.onHexSetAlphaToOne == true){
+            this.printResultsOnlyAlpha(1);
+            this.alpha.marker.style.top = "0px";
+          }
+        });
+        rgb.addEventListener("click", () => { this.setResultButton("rgb"); });
+        hsl.addEventListener("click", () => { this.setResultButton("hsl"); });
 
-        // save to
         this.ele.results.hexBtn = hex;
         this.ele.results.rgbBtn = rgb;
         this.ele.results.hslBtn = hsl;
 
-        // append to
         container.append(hex);
         container.append(rgb);
         container.append(hsl);
@@ -1127,13 +1123,12 @@ class ColorPicker {
           element.setAttribute("class", "copy");
             element.innerHTML = "copy";
 
-            element.addEventListener("click", () => {
-              if(this.session.selected == "hex"){ this.copy(this.ele.results.hexView); this.copy(this.ele.results.hexView); }
-              if(this.session.selected == "hsl"){  this.copy(this.ele.results.hslView); this.copy(this.ele.results.hslView); }
-              if(this.session.selected == "rgb"){  this.copy(this.ele.results.rgbView); this.copy(this.ele.results.rgbView); }
-            });
+          element.addEventListener("click", () => {
+            if(this.session.selected == "hex"){ this.copy(this.ele.results.hexView); this.copy(this.ele.results.hexView); }
+            if(this.session.selected == "hsl"){  this.copy(this.ele.results.hslView); this.copy(this.ele.results.hslView); }
+            if(this.session.selected == "rgb"){  this.copy(this.ele.results.rgbView); this.copy(this.ele.results.rgbView); }
+          });
 
-          // append to
           this.ele.results.object.append(element);
           this.ele.results.copy = element;
         }
@@ -1142,10 +1137,7 @@ class ColorPicker {
       let container = document.createElement("div");
         container.setAttribute("class", "pickers");
 
-      // save to
       this.ele.picker = container;
-
-      // append to
       this.ele.container.append(container);
     }
       createSpectrum(){
@@ -1169,13 +1161,13 @@ class ColorPicker {
         });
         this.ele.object.addEventListener("mousemove", (e) => {
           if(this.session.moveSpectrum){
-            this.updatePosition(e, container, marker, "both", "spectrum");
+            this.updateMarkerPositiononDrag(e, container, marker, "both", "spectrum");
             this.userClickOnSpectrum();
             this.ele.object.classList.add("select-none");
           }
         });
         spectrum.addEventListener("click", (e) => {
-          this.updatePosition(e, container, marker, "both", "spectrum");
+          this.updateMarkerPositiononDrag(e, container, marker, "both", "spectrum");
           this.userClickOnSpectrum();
         });
 
@@ -1186,17 +1178,15 @@ class ColorPicker {
         });
         this.ele.object.addEventListener("touchmove", (e) => {
           if(this.session.moveSpectrum){
-            this.updatePosition(e.touches[0], container, marker, "both", "spectrum", "mobile");
+            this.updateMarkerPositiononDrag(e.touches[0], container, marker, "both", "spectrum", "mobile");
             this.userClickOnSpectrum();
             this.ele.object.classList.add("select-none");
           }
         });
 
-        // save to
         this.spectrum.object = spectrum;
         this.spectrum.marker = marker;
 
-        // append to
         container.append(spectrum);
         container.append(marker);
         this.ele.picker.append(container);
@@ -1222,13 +1212,13 @@ class ColorPicker {
           });
           this.ele.object.addEventListener("mousemove", (e) => {
             if(this.session.moveHue){
-              this.updatePosition(e, container, marker, "x", "hue");
+              this.updateMarkerPositiononDrag(e, container, marker, "x", "hue");
               this.userClickOnHue();
               this.ele.object.classList.add("select-none");
             }
           });
           hue.addEventListener("click", (e) => {
-            this.updatePosition(e, container, marker, "x", "hue");
+            this.updateMarkerPositiononDrag(e, container, marker, "x", "hue");
             this.userClickOnHue();
           });
 
@@ -1239,17 +1229,15 @@ class ColorPicker {
           });
           this.ele.object.addEventListener("touchmove", (e) => {
             if(this.session.moveHue){
-            this.updatePosition(e.touches[0], container, marker, "x", "hue", "mobile");
+            this.updateMarkerPositiononDrag(e.touches[0], container, marker, "x", "hue", "mobile");
             this.userClickOnHue();
             this.ele.object.classList.add("select-none");
           }
           });
 
-        // add to
         this.hue.object = hue;
         this.hue.marker = marker;
 
-        // append to
         container.append(hue);
         container.append(marker);
         this.ele.picker.append(container);
@@ -1275,13 +1263,13 @@ class ColorPicker {
         });
           this.ele.object.addEventListener("mousemove", (e) => {
             if(this.session.moveAlpha){
-              this.updatePosition(e, container, marker, "x", "alpha");
+              this.updateMarkerPositiononDrag(e, container, marker, "x", "alpha");
               this.userClickOnAlpha();
               this.ele.object.classList.add("select-none");
             }
           });
           alpha.addEventListener("click", (e) => {
-            this.updatePosition(e, container, marker, "x", "alpha");
+            this.updateMarkerPositiononDrag(e, container, marker, "x", "alpha");
             this.userClickOnAlpha();
           });
 
@@ -1292,17 +1280,15 @@ class ColorPicker {
           });
           this.ele.object.addEventListener("touchmove", (e) => {
             if(this.session.moveAlpha){
-            this.updatePosition(e.touches[0], container, marker, "x", "alpha", "mobile");
+            this.updateMarkerPositiononDrag(e.touches[0], container, marker, "x", "alpha", "mobile");
             this.userClickOnAlpha();
             this.ele.object.classList.add("select-none");
           }
           });
 
-        // add to
         this.alpha.object = alpha;
         this.alpha.marker = marker;
 
-        // append to
         container.append(alpha);
         container.append(marker);
         this.ele.picker.append(container);
@@ -1319,36 +1305,27 @@ class ColorPicker {
         select.setAttribute("class", "select-btn");
         select.innerHTML = "Select";
 
-      cancel.addEventListener("click", () => {
-        this.userSelect("n");
-      });
-      select.addEventListener("click", () => {
-        this.userSelect("y");
-      });
+      cancel.addEventListener("click", () => { this.userSelect("n"); });
+      select.addEventListener("click", () => { this.userSelect("y"); });
 
-      // save to
       this.ele.cancel = cancel;
       this.ele.select = select;
 
-      // append to
       container.append(cancel);
       container.append(select);
       this.ele.container.append(container);
-
     }
     createFlashMessage(){
-        let container = document.createElement("div");
-          container.setAttribute("class", "flashMessage");
-          container.innerHTML = "Flash Message";
+      let container = document.createElement("div");
+        container.setAttribute("class", "flashMessage");
 
-        // append to
-        this.ele.flashMessage = container;
-        this.ele.container.append(container);
-      }
+      this.ele.flashMessage = container;
+      this.ele.container.append(container);
+    }
 
   // update position when draging the marker over the sliders
   // (touch//click event, container, marker, both(both, x, y), name of slider, if mobile)
-  updatePosition(t, e, m, d = "both", x, y = "desktop"){
+  updateMarkerPositiononDrag(t, e, m, d = "both", x, y = "desktop"){
     // distance from container to edge of screen
     let cont = this.ele.container.getBoundingClientRect();
     // mouse position
@@ -1361,23 +1338,15 @@ class ColorPicker {
       cont.y = 0;
     }
 
-    // inside
+    // inside -> top left c -> top right c -> bottom right c -> bottom left c -> bottom -> right -> top -> left
     if( c.x >= 0 + cont.x && c.y >= 0 + cont.y && c.x <= e.offsetWidth + cont.x && c.y <= e.offsetHeight + cont.y){ pos = {"x": c.x - cont.x, "y": c.y - cont.y}; }
-    // top left corner
     else if(c.x <= 0 + cont.x && c.y <= 0 + cont.y) { pos = {"x": 0, "y": 0}; }
-    // top right corner
     else if(c.x >= e.offsetWidth + cont.x && c.y <= 0 + cont.y){ pos = {"x": e.offsetWidth, "y": 0}; }
-    // bottom right corner
     else if(c.x >= e.offsetWidth + cont.x && c.y >= e.offsetHeight + cont.y){ pos = {"x": e.offsetWidth, "y": e.offsetHeight}; }
-    // bottom left corner
     else if(c.x <= 0 + cont.x && c.y >= e.offsetHeight + cont.y){ pos = {"x": 0, "y": e.offsetHeight}; }
-    // bottom side
     else if(c.y >= e.offsetHeight + cont.y){ pos = {"x": c.x - cont.x, "y": e.offsetHeight}; }
-    // right side
     else if(c.x >= e.offsetWidth + cont.x && c.y >= 0 + cont.y){ pos = {"x": e.offsetWidth, "y": c.y - cont.y}; }
-    // top side
     else if(c.x >= 0 + cont.x) { pos = {"x": c.x - cont.x, "y": 0}; }
-    // left side
     else if(c.y >= 0 + cont.y) { pos = {"x": 0, "y": c.y - cont.y}; }
 
     // set marker position
