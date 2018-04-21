@@ -109,7 +109,7 @@ darkMode: "true | false"
 ## Functions
 You might want to change or update the colorpicker using code.
 
-** Set Color ** <br>
+**Set Color** <br>
 This function will validate the input and if the validation returns true, update the colorpickers current color. This will update the input text and label. It accepts `hex` | `rgb` | `rgba` | `hsl` | `hsla` values as a `string`.
 ```
 colorpicker.setColor("VALUE");
@@ -117,7 +117,7 @@ colorpicker.setColor("VALUE");
 
 <br>
 
-** Dark Mode ** <br>
+**Dark Mode** <br>
 This function will allow you to switch between light and dark mode after the page has finished loading.
 ```
 colorpicker.darkMode(true | false);
