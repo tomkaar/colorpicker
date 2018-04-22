@@ -9,7 +9,7 @@ const settings = {
   "onHexSetAlphaToOne": true
 };
 
-const cp = new ColorPicker(label, input, settings);
+new ColorPicker(label, input, settings);
 
 
 

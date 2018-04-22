@@ -23,7 +23,7 @@ class ColorPicker {
       "move": false, // if user should be able to drag a marker
       "moveAlpha": false, // if user should be able to drag a marker
       "moveHue": false, // if user should be able to drag a marker
-      "moveAlpha": false, // if user should be able to drag a marker
+      "moveSpectrum": false, // if user should be able to drag a marker
       "selected": "hex", // currently selected type (results)
       currentColor: {
         "hsv":  {"h": 0, "s": 100, "v": 100},
@@ -429,16 +429,14 @@ class ColorPicker {
   userInputUpdateOpen(a = "hex"){
     let input;
 
-    if(a == "hex"){ input = this.ele.results.hexView.value }
-    if(a == "rgb"){ input = this.ele.results.rgbView.value }
-    if(a == "hsl"){ input = this.ele.results.hslView.value }
+    if(a == "hex"){ input = this.ele.results.hexView.value; }
+    if(a == "rgb"){ input = this.ele.results.rgbView.value; }
+    if(a == "hsl"){ input = this.ele.results.hslView.value; }
 
     let valid = this.validateValue(input);
 
     if(valid.status == "valid"){
       let hsv = this.convertValue(input, valid.type, "hsv");
-      let rgb = this.convertValue(input, valid.type, "rgb");
-      let bg = "rgba(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ", 1)";
       let alpha;
 
       if(a == "hex"){ alpha = 1; }
@@ -847,11 +845,11 @@ class ColorPicker {
       if(to == "hsl"){
         let a = this.convert.hexToRgb(c);
         return this.convert.rgbToHsl(a.r, a.g, a.b);
-        }
+      }
       if(to == "hsla"){
         let a = this.convert.hexToRgb(c);
         let b = this.convert.rgbToHsl(a.r, a.g, a.b);
-        return {"h": b.h, "s": b.s, "l": b.l, "a": 1}
+        return {"h": b.h, "s": b.s, "l": b.l, "a": 1};
       }
       if(to == "hsv"){
         let a = this.convert.hexToRgb(c);
@@ -1034,7 +1032,7 @@ class ColorPicker {
           }
           else {
             console.log("Cannot set default value on the colorpicker.");
-            hsv = this.settings.defaultColor.hsv }
+            hsv = this.settings.defaultColor.hsv;}
 
           // set color
           this.settings.defaultColor.hsv = hsv;
