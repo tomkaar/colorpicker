@@ -126,8 +126,7 @@ colorpicker.darkMode(true | false);
 
 
 ## ToDo
-- Input text on open picker
-- Function -> Toggle DarkMode
+- cleanup and restructure
 
 
 

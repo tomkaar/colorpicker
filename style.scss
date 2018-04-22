@@ -79,7 +79,6 @@ html, body{
       height: 60px;
       width: 100%;
       padding: 20px;
-      font-size: 18px;
       font-family: sans-serif;
       letter-spacing: 1px;
       text-align: center;
@@ -87,8 +86,14 @@ html, body{
       .results-view-hex,
       .results-view-rgb,
       .results-view-hsl{
+        appearance: none;
         display: none;
         width: 100%;
+        font-size: 18px;
+        text-align: center;
+        background: transparent;
+        border: none;
+        outline: none;
 
         &.active{
           display: block;
@@ -222,7 +227,7 @@ html, body{
   .flashMessage{
     display: none;
     position: absolute;
-    margin-top: calc(100% + 10px);
+    margin-top: 10px;
     padding: 15px;
     width: 100%;
     text-align: center;

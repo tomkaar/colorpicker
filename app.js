@@ -28,4 +28,4 @@ const settings2 = {
 const cp2 = new ColorPicker(label2, input2, settings2);
 
 
-cp2.setColor("#rgba(0, 200, 0, 0.3)");
+cp2.setColor("rgba(255, 0, 68, 1)");
